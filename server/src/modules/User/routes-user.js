@@ -5,12 +5,17 @@ class Routes {
 
     constructor() {
         this.App = Router();
+        this.RoutesPublic();
         this.Route();
     }
 
-    Route() {
+    RoutePrivete() {
         this.App.post("/", Controller.Criar);
     }
+    RoutesPublic() {
+        this.App.post("/login", Controller.LoginUser);
+    }
 }
+
 
 export default new Routes().App;
