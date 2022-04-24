@@ -25,11 +25,11 @@ class Services {
             const userPassword = await Repositories.getPasswordByEmail(email);
             const idUser = userPassword.id;
             if (!userPassword) return new Error('email não existe.');
-            console.log(userPassword)
             const match = await bcrypt.compare(password, userPassword.password);
             if (!match) return new Error('senha invalida');
             // crio o token e refrehstoken
             const { Token, RefreshToken } = await Auth.CreateToken({ email, idUser });
+            console.log('token', Token, 'refrehs', RefreshToken)
             // salvo o refreshToken do usuario no DB junto com seu ID.
             await Repositories.createNewRefreshToken(RefreshToken, idUser);
             // retorno o token de acesso
@@ -42,20 +42,20 @@ class Services {
 
     async RefreshToken(id) {
         try {
-            // essa rota e protegida por um middleware, neste middleware exite a validação do token do usuario.
-            // caso passe neste middleware
             // --> busca um token no banco de dados;
-            // esse token é criado quando o usuario faz login. Ele tem um tempo limite maior, exemplo : 1hr.
-            // o usuario, dono deste token, pode fazer o refresh token durante 1hr, depois desse periodo 
-            // o token continua armazenado no banco de dados, caso o usuario faça login novamente, este token e atualizado. 
-            const AlreadyRefreshToken = await findRefreshTokenById('id', id);
-            // verificar se esse token exite;
-            if (!AlreadyRefreshToken) return new Error('Token refresh invalido.');
+            // esse token é criado quando o usuario faz login. Ele tem um tempo limite maior, exemplo : 2hr.
+            const { accept_token } = await Repositories.findRefreshTokenById(id);
+            console.log('token', accept_token)
+            // verificar se esse token exite, caso o usuario seja bloqueado e tente nevegar na apliacação;
+            if (!accept_token) return new Error('Refresh token não informado.');
             // Valida o refreshToken que esta salvo no banco de dados. (time);
-            const isValid = await Auth.ValidateRefreshToken(AlreadyRefreshToken);
-            console.log(isValid)
+            const Token = await Auth.ValidateRefreshToken(accept_token);
+            // verifica se o refreshToken ainda é valido, se ainda for valido ele retorna um novo token (refreshToken) que é enviado para o client.
+            if (Token instanceof Error) return new Error('Sua sessão expirou. Faça um novo login.');
+            // se tudo de certo retorna um novo token
+            return Token
         } catch (error) {
-
+            throw new Error('Não foi possivel fazer o login do  usuario');
         }
     }
 

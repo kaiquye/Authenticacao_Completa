@@ -10,11 +10,9 @@ class Routes {
         this.Middleware();
         this.RoutePrivete();
     }
-
     Middleware() {
         this.App.use(Auth.ValidateToken);
     }
-
     RoutePrivete() {
         this.App.put('/refresh-token', Controller.RefreshToken);
         this.App.post("/", Controller.Criar);

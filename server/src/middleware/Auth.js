@@ -6,7 +6,7 @@ class Auth {
         console.log('user', data);
         const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: process.env.expiresIn });
         // boa pratica : Criar uma secret para valida somente o token do banco de dados.
-        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '600' });
+        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '9999999999999' });
         return { Token, RefreshToken };
     }
 
@@ -18,7 +18,6 @@ class Auth {
         }
         try {
             const { data } = jsonwebtoken.verify(Token, process.env.SECRET);
-            console.log('data', data)
             if (data) return next()
         } catch (error) {
             return res.status(401).json({ ok: false, message: 'Usuario não tem permisão. ' + error.message });
@@ -33,6 +32,9 @@ class Auth {
         }
         try {
             const { data } = jsonwebtoken.verify(Token, process.env.SECRET);
+            if (req.body.RefreshToken) {
+                this.ValidateRefreshToken(req.body.RefreshToken);
+            }
             return res.status(200).json({ ok: true, data });
         } catch (error) {
             return res.status(401).json({ ok: false, message: 'Usuario não tem permisão. ' + error.message });
@@ -41,12 +43,15 @@ class Auth {
 
     async ValidateRefreshToken(RefreshToken) {
         try {
+            // verifica se o refresh token que esta salvo no banco de dados ainda é valido (tempo).
             const { data } = jsonwebtoken.verify(RefreshToken, process.env.SECRET);
-            console.log('refresh', data)
-            this.CreateToken(data)
-            return res.status(200).json({ ok: true, data });
+            // criar um novo token com as informações do token que veio banco de dados (email, id do usuario).
+            const { Token } = await this.CreateToken(data)
+            // retorna o novo token
+            return Token
         } catch (error) {
-            return res.status(401).json({ ok: false, message: 'Usuario não tem permisão. ' + error.message });
+            // retorna false, caso não possa criar novos tokens.
+            return new Error('Refresh token invalid.')
         }
     }
 
