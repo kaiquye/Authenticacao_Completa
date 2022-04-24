@@ -12,13 +12,10 @@ class Model {
     }
     async createNewRefreshToken(refreshToken, idUser) {
         // salvo o refreshToken com o id do usuario
-        // antes se o tempo Token que estar no banco de dados ainda é valido.
         const accept_token = await Connection("accept_token").select('id').where('userId', idUser);
         if (!accept_token[0]) {
-            console.log('inset00000000000000000000')
             await Connection("accept_token").insert({ accept_token: refreshToken, userId: idUser });
         } else {
-            console.log('updte111111111111111')
             await Connection("accept_token").update({ accept_token: refreshToken }).where('userId', idUser);
         }
     }

@@ -43,7 +43,7 @@ class Services {
     async RefreshToken(id) {
         try {
             // --> busca um token no banco de dados;
-            // esse token é criado quando o usuario faz login. Ele tem um tempo limite maior, exemplo : 2hr.
+            // esse token é criado quando o usuario faz login. Ele tem um tempo de expiração maior, exemplo : 2hr.
             const { accept_token } = await Repositories.findRefreshTokenByUserId(id);
             console.log('token', accept_token)
             // verificar se esse token exite, caso o usuario seja bloqueado e tente nevegar na apliacação;
