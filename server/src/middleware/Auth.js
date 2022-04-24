@@ -8,7 +8,7 @@ class Auth {
         console.log()
         const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '1130s' });
         // boa pratica : Criar uma secret para valida somente o token do banco de dados.
-        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET_REFRESH_TOKEN, { expiresIn: '12200s' });
+        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET_REFRESH_TOKEN, { expiresIn: '900000s' });
         return { Token, RefreshToken };
     }
 

@@ -8,7 +8,7 @@ class Model {
         return await Connection("usuario").select('name').where('email', email).first();
     }
     async getPasswordByEmail(email) {
-        return await Connection("usuario").select('password', 'id').where('email', email).first();
+        return await Connection("usuario").select('password', 'id', 'name').where('email', email).first();
     }
     async createNewRefreshToken(refreshToken, idUser) {
         // salvo o refreshToken com o id do usuario

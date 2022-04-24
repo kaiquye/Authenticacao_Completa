@@ -33,7 +33,7 @@ class Services {
             // salvo o refreshToken do usuario no DB junto com seu ID.
             await Repositories.createNewRefreshToken(RefreshToken, idUser);
             // retorno o token de acesso
-            return Token
+            return { Token, RefreshToken: idUser, name: userPassword.name, email: email }
         } catch (error) {
             console.log(error)
             throw new Error('Não foi possivel fazer o login do  usuario');

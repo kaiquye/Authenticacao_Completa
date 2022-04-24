@@ -18,7 +18,10 @@ class Routes {
         this.App.post("/", Controller.Criar);
 
         // GERAR NOVO TOKEN : 
-        // Casos de usos: Essa rota pode ser usada em seu Context-Api com um useEffect. Todas as vezes que alguma pagina for renderizada e ela estiver dentro do seu context de authenticação será criado um novo Token 🌎
+        /* 
+        Casos de usos: Essa rota pode ser usada em seu Context-Api com um useEffect. Todas as vezes que alguma 
+        pagina for renderizada e ela estiver dentro do seu context de authenticação será criado um novo Token 🌎
+        */
         this.App.put('/refresh-token', Controller.RefreshToken);
     }
     RoutesPublic() {

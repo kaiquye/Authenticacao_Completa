@@ -33,9 +33,11 @@ class Controller {
         }
     }
 
-    // RESUMO -> Login: Um token é enviado para o client e o outro é salvo no banco de dados como :(refresh token). O refresh token é usado como base para criar outros novos tokens verificando o tempo de expiração dele.
-    // Quando o login é feito, dois tokens é criado, um com duração de 1 hora e o outro com uma duração maior que é salvo no db. 
-    // a rota refrest-token é usada para criar um novo token. Essa rota e protegida pelo middleware de authenticação, com isso, SO È POSSIVEL CRIAR UM NOVO SE O TOKEN ANTIGO FOR VALIDO.
+    /* -> Login: Um token é enviado para o client e o outro é salvo no banco de dados como :(refresh token). O
+    refresh token é usado como base para criar outros novos tokens verificando o tempo de expiração dele.
+     Quando o login é feito, dois tokens é criado, um com duração de 1 hora e o outro com uma duração maior que é 
+     salvo no db.  */
+    /* a rota refrest-token é usada para criar um novo token. Essa rota e protegida pelo middleware de authenticação. SO È POSSIVEL CRIAR UM NOVO SE O TOKEN ANTIGO FOR VALIDO. */
     async RefreshToken(req, res) {
         try {
             const { RefreshTokenID } = req.body; // vamos buscar no banco de dados pelo token com esse id do usuario;
