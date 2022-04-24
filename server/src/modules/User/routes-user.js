@@ -14,10 +14,15 @@ class Routes {
         this.App.use(Auth.ValidateToken);
     }
     RoutePrivete() {
-        this.App.put('/refresh-token', Controller.RefreshToken);
+        // novo usuario
         this.App.post("/", Controller.Criar);
+
+        // GERAR NOVO TOKEN : 
+        // Casos de usos: Essa rota pode ser usada em seu Context-Api com um useEffect. Todas as vezes que alguma pagina for renderizada e ela estiver dentor do seu context de authenticação será criado um novo Token 🌎
+        this.App.put('/refresh-token', Controller.RefreshToken);
     }
     RoutesPublic() {
+        // login usuario
         this.App.post("/login", Controller.LoginUser);
     }
 }
