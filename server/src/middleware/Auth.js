@@ -4,9 +4,9 @@ class Auth {
 
     async CreateToken(data) {
         console.log('user', data);
-        const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: process.env.expiresIn });
+        const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '30s' });
         // boa pratica : Criar uma secret para valida somente o token do banco de dados.
-        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '9999999999999' });
+        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '12200s' });
         return { Token, RefreshToken };
     }
 
@@ -51,7 +51,7 @@ class Auth {
             return Token
         } catch (error) {
             // retorna false, caso não possa criar novos tokens.
-            return new Error('Sua sessão expirou. faça login novamente para continuar.')
+            return new Error('Sua sessão expirou. faça login novamente para continuar.' + error.message)
         }
     }
 

@@ -37,7 +37,7 @@ class Controller {
     // a rota refrest-token é usada para criar um novo token. Essa rota e protegida pelo middleware de authenticação, com isso, SO È POSSIVEL CRIAR UM NOVO TOKEN SE O TOKEN ANTIGO FOR VALIDO.
     async RefreshToken(req, res) {
         try {
-            const { RefreshTokenID } = req.body; // vamos buscar no banco de dados pelo token com esse id;
+            const { RefreshTokenID } = req.body; // vamos buscar no banco de dados pelo token com esse id do usuario;
             // verificar se o ID do token foi enviado
             if (!RefreshTokenID) {
                 return res.status(400).json({ ok: false, message: "Refresh Token invalid" });
