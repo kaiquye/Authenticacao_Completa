@@ -23,11 +23,11 @@ class Services {
     async LoginUser({ email, password }) {
         try {
             const userPassword = await Repositories.getPasswordByEmail(email);
-            const idUser = userPassword.id;
             if (!userPassword) return new Error('email não existe.');
             const match = await bcrypt.compare(password, userPassword.password);
             if (!match) return new Error('senha invalida');
             // crio o token e refrehstoken
+            const idUser = userPassword.id;
             const { Token, RefreshToken } = await Auth.CreateToken({ email, idUser });
             console.log('token', Token, 'refrehs', RefreshToken)
             // salvo o refreshToken do usuario no DB junto com seu ID.

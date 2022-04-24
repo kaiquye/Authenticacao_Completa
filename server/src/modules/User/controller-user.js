@@ -1,19 +1,20 @@
 import Services from "./service-user.js";
 import Auth from '../../middleware/Auth.js'
+import http from 'http'
 
 class Controller {
     async Criar(req, res) {
         try {
             const { name, email, password } = req.body;
             if (!name || !email || !password) {
-                return res.status(400).json({ ok: false, message: "Campos nullos" });
+                return res.status(400).json({ ok: false, message: '  campos nullos', STATUS_CODES: http.STATUS_CODES['400'] });
             }
             const Created = await Services.Create(req.body);
-            if (Created instanceof Error) return res.status(400).json({ ok: false, message: Created.message });
-            return res.status(201).json({ ok: true, message: 'usuario criado com sucesso.' });
+            if (Created instanceof Error) return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: Created.message });
+            return res.status(201).json({ ok: true, STATUS_CODES: http.STATUS_CODES['201'] });
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ ok: false, message: "Error. Não foi possivel criar um novo usuario. Erro no servidor." });
+            return res.status(500).json({ ok: false, STATUS_CODES: http.STATUS_CODES['500'] });
         }
     }
 
@@ -21,14 +22,14 @@ class Controller {
         try {
             const { email, password } = req.body;
             if (!email || !password) {
-                return res.status(400).json({ ok: false, message: "Campos nullos" });
+                return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: "Campos nullos" });
             }
             const Login = await Services.LoginUser(req.body);
-            if (Login instanceof Error) return res.status(400).json({ ok: false, message: Login.message });
-            return res.status(200).json({ ok: true, token: Login });
+            if (Login instanceof Error) return res.status(404).json({ ok: false, STATUS_CODES: http.STATUS_CODES['404'], message: Login.message });
+            return res.status(202).json({ ok: true, STATUS_CODES: http.STATUS_CODES['202'], token: Login });
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ ok: false, message: "Não foi possivel fazer login." });
+            return res.status(500).json({ ok: false, STATUS_CODES: http.STATUS_CODES['500'] });
         }
     }
 
@@ -39,16 +40,16 @@ class Controller {
         try {
             const { RefreshTokenID } = req.body; // vamos buscar no banco de dados pelo token com esse id do usuario;
             if (!RefreshTokenID) {
-                return res.status(400).json({ ok: false, message: "Refresh Token invalid" });
+                return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: "Refresh Token invalid" });
             }
             const newToken = await Services.RefreshToken(RefreshTokenID);
             // se o token do db ja tive expirado ele retorna um error (sessão expirou)
-            if (newToken instanceof Error) return res.status(403).json({ ok: false, message: newToken.message });
+            if (newToken instanceof Error) return res.status(401).json({ ok: false, STATUS_CODES: http.STATUS_CODES['401'], message: newToken.message });
             // se não, retorna um novo token para o client.
-            return res.status(400).json({ ok: true, token: newToken });
+            return res.status(200).json({ ok: true, STATUS_CODES: http.STATUS_CODES['200'], token: newToken });
         } catch (error) {
             console.log(error)
-            return res.status(500).json({ ok: false, message: "Não foi possivel geraar um novo token." });
+            return res.status(500).json({ ok: false, STATUS_CODES: http.STATUS_CODES['500'] });
         }
     }
 }

@@ -1,12 +1,14 @@
 import jsonwebtoken from 'jsonwebtoken';
+import http from 'http'
 
 class Auth {
 
     async CreateToken(data) {
         console.log('user', data);
-        const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '30s' });
+        console.log()
+        const Token = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '1130s' });
         // boa pratica : Criar uma secret para valida somente o token do banco de dados.
-        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '12200s' });
+        const RefreshToken = await jsonwebtoken.sign({ data }, process.env.SECRET_REFRESH_TOKEN, { expiresIn: '12200s' });
         return { Token, RefreshToken };
     }
 
@@ -14,13 +16,14 @@ class Auth {
         const Token = req.headers['x-custom-header'];
         console.log(process.env.SECRET)
         if (!Token) {
-            return res.status(401).json({ message: 'Token não foi informado.' });
+            return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: 'Token não foi informado.' });
         }
         try {
             const { data } = jsonwebtoken.verify(Token, process.env.SECRET);
             if (data) return next()
         } catch (error) {
-            return res.status(401).json({ ok: false, message: 'Usuario não tem permisão. ' + error.message });
+            console.log(http.STATUS_CODES.Unauthorized)
+            return res.status(203).json({ ok: false, STATUS_CODES: http.STATUS_CODES['203'], message: 'Usuario não tem permisão. ' + error.message });
         }
     }
 
@@ -28,23 +31,23 @@ class Auth {
         const Token = req.headers['x-custom-header'];
         console.log(process.env.SECRET)
         if (!Token) {
-            return res.status(401).json({ message: 'Token não foi informado.' });
+            return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: 'Token não foi informado.' });
         }
         try {
             const { data } = jsonwebtoken.verify(Token, process.env.SECRET);
             if (req.body.RefreshToken) {
                 this.ValidateRefreshToken(req.body.RefreshToken);
             }
-            return res.status(200).json({ ok: true, data });
+            return res.status(200).json({ ok: true, STATUS_CODES: http.STATUS_CODES['200'], data });
         } catch (error) {
-            return res.status(401).json({ ok: false, message: 'Usuario não tem permisão. ' + error.message });
+            return res.status(203).json({ ok: false, STATUS_CODES: http.STATUS_CODES['203'], message: 'Usuario não tem permisão. ' + error.message });
         }
     }
 
     async ValidateRefreshToken(RefreshToken) {
         try {
             // verifica se o refresh token que esta salvo no banco de dados ainda é valido (tempo).
-            const { data } = jsonwebtoken.verify(RefreshToken, process.env.SECRET);
+            const { data } = jsonwebtoken.verify(RefreshToken, process.env.SECRET_REFRESH_TOKEN);
             // criar um novo token com as informações do token que veio banco de dados (email, id do usuario).
             const { Token } = await this.CreateToken(data)
             // retorna o novo token
