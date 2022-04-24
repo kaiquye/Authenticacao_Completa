@@ -51,7 +51,7 @@ class Auth {
             return Token
         } catch (error) {
             // retorna false, caso não possa criar novos tokens.
-            return new Error('Refresh token invalid.')
+            return new Error('Sua sessão expirou. faça login novamente para continuar.')
         }
     }
 

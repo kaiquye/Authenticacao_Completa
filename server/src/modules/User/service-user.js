@@ -50,9 +50,6 @@ class Services {
             if (!accept_token) return new Error('Refresh token não informado.');
             // Valida o refreshToken que esta salvo no banco de dados. (time);
             const Token = await Auth.ValidateRefreshToken(accept_token);
-            // verifica se o refreshToken ainda é valido, se ainda for valido ele retorna um novo token (refreshToken) que é enviado para o client.
-            if (Token instanceof Error) return new Error('Sua sessão expirou. Faça um novo login.');
-            // se tudo de certo retorna um novo token
             return Token
         } catch (error) {
             throw new Error('Não foi possivel fazer o login do  usuario');

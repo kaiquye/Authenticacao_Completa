@@ -45,9 +45,9 @@ class Controller {
             // valido o token - recebo um novo token
             const newToken = await Services.RefreshToken(RefreshTokenID);
             // se o token do db ja tive expirado ele retorna um error (sessão expirou)
-            if (newToken instanceof Error) return res.status(400).json({ ok: false, message: newToken.message });
+            if (newToken instanceof Error) return res.status(403).json({ ok: false, message: newToken.message });
             // se não, retorna um novo token para o client.
-            return res.status(400).json({ ok: false, token: newToken });
+            return res.status(400).json({ ok: true, token: newToken });
         } catch (error) {
             console.log(error)
             return res.status(500).json({ ok: false, message: "Não foi possivel geraar um novo token." });
