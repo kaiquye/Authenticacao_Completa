@@ -9,8 +9,8 @@ export const useApi = () => ({
         const response = await Api.post('/login', { email, password });
         return response.data;
     },
-    refreshToken: async (refreshToken, Token){
-        const response = await Api.post('/login', { email, password });
+    refreshToken: async (refreshToken, Token) => {
+        const response = await Api.put('/refresh-token', { RefreshTokenID: refreshToken }, { headers: { 'x-custom-header': Token } });
         return response.data;
     }
 })

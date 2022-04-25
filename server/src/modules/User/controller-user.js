@@ -48,7 +48,7 @@ class Controller {
             // se o token do db ja tive expirado ele retorna um error (sessão expirou)
             if (newToken instanceof Error) return res.status(401).json({ ok: false, STATUS_CODES: http.STATUS_CODES['401'], message: newToken.message });
             // se não, retorna um novo token para o client.
-            return res.status(200).json({ ok: true, STATUS_CODES: http.STATUS_CODES['200'], token: newToken });
+            return res.status(200).json({ ok: true, STATUS_CODES: http.STATUS_CODES['200'], token: newToken.Token, data: newToken.data });
         } catch (error) {
             console.log(error)
             return res.status(500).json({ ok: false, STATUS_CODES: http.STATUS_CODES['500'] });

@@ -51,7 +51,7 @@ class Auth {
             // criar um novo token com as informações do token que veio banco de dados (email, id do usuario).
             const { Token } = await this.CreateToken(data)
             // retorna o novo token
-            return Token
+            return { Token, data }
         } catch (error) {
             // retorna false, caso não possa criar novos tokens.
             return new Error('Sua sessão expirou. faça login novamente para continuar.' + error.message)

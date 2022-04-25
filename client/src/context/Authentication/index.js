@@ -20,12 +20,18 @@ export const AuthContextProvider = function ({ children }) {
      * **/
 
     useEffect(() => {
-
+        RefreshToken()
     }, [])
 
-    const RefreshToken = async function()[
-        
-    ]
+    const RefreshToken = async function () {
+        try {
+            const response = await api.refreshToken(storage.getRefreshToken(), storage.getToken())
+            console.log(response);
+        } catch (error) {
+            alert('erro')
+            console.log({ error })
+        }
+    }
 
     const Login = async function (email, password) {
         try {

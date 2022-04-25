@@ -49,8 +49,8 @@ class Services {
             // verificar se esse token exite, caso o usuario seja bloqueado e tente nevegar na apliacação;
             if (!accept_token) return new Error('Refresh token não informado.');
             // Valida o refreshToken que esta salvo no banco de dados. (time);
-            const Token = await Auth.ValidateRefreshToken(accept_token);
-            return Token
+            const { Token, data } = await Auth.ValidateRefreshToken(accept_token);
+            return { Token, data }
         } catch (error) {
             console.log(error)
             throw new Error('Não foi possivel gerar um novo token');
