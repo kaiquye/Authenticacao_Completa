@@ -25,10 +25,14 @@ export const AuthContextProvider = function ({ children }) {
 
     const RefreshToken = async function () {
         try {
-            const response = await api.refreshToken(storage.getRefreshToken(), storage.getToken())
-            console.log(response);
+            const { ok, data, token } = await api.refreshToken(storage.getRefreshToken(), storage.getToken())
+            if (!ok) {
+                alert('Usuario não authenticado');
+                return false
+            }
+            setUserIsAuthenticated({ auth: true, email: data.email, name: data.email })
+            storage.setToken(token)
         } catch (error) {
-            alert('erro')
             console.log({ error })
         }
     }
