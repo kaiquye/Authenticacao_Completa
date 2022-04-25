@@ -14,5 +14,5 @@ export const useToken = () => ({
     },
     setRefreshToken: (RefreshToke) => {
         localStorage.setItem('RefreshToken', RefreshToke);
-    }
+    },
 })

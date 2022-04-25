@@ -9,7 +9,7 @@ export const AuthContext = createContext({});
 
 export const AuthContextProvider = function ({ children }) {
 
-    const [userIsAuthenticated, setUserIsAuthenticated] = useState({ auth: false, email: null, name: null })
+    const [userIsAuthenticated, setUserIsAuthenticated] = useState({ auth: false, email: null })
 
     const api = useApi();
     const storage = useToken();
@@ -20,29 +20,23 @@ export const AuthContextProvider = function ({ children }) {
      * **/
 
     useEffect(() => {
-        RefreshToken()
+        (async () => {
+            await api.RefreshToken(storage.getRefreshToken(), storage.getToken())
+            const { ok, data } = await api.ValidateToken(storage.getRefreshToken(), storage.getToken());
+            if (ok) {
+                console.log(data);
+                setUserIsAuthenticated({ auth: true, email: data.email })
+            }
+        })()
     }, [])
 
-    const RefreshToken = async function () {
-        try {
-            const { ok, data, token } = await api.refreshToken(storage.getRefreshToken(), storage.getToken())
-            if (!ok) {
-                alert('Usuario não authenticado');
-                return false
-            }
-            setUserIsAuthenticated({ auth: true, email: data.email, name: data.email })
-            storage.setToken(token)
-        } catch (error) {
-            console.log({ error })
-        }
-    }
 
     const Login = async function (email, password) {
         try {
             const { ok, token } = await api.login(email, password);
             if (!ok) throw new Error('Erro.')
-            const { RefreshToken, Token, name } = token;
-            setUserIsAuthenticated({ auth: true, email, name })
+            const { RefreshToken, Token } = token;
+            setUserIsAuthenticated({ auth: true, email })
             storage.setToken(Token);
             storage.setRefreshToken(RefreshToken);
             return true;

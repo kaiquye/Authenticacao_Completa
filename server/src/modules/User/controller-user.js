@@ -18,6 +18,21 @@ class Controller {
         }
     }
 
+    async AuthUser(req, res) {
+        try {
+            const { email, password } = req.body;
+            if (!email || !password) {
+                return res.status(400).json({ ok: false, STATUS_CODES: http.STATUS_CODES['400'], message: "Campos nullos" });
+            }
+            const Login = await Services.LoginUser(req.body);
+            if (Login instanceof Error) return res.status(404).json({ ok: false, STATUS_CODES: http.STATUS_CODES['404'], message: Login.message });
+            return res.status(202).json({ ok: true, STATUS_CODES: http.STATUS_CODES['202'], token: Login });
+        } catch (error) {
+            console.log(error)
+            return res.status(500).json({ ok: false, STATUS_CODES: http.STATUS_CODES['500'] });
+        }
+    }
+
     async LoginUser(req, res) {
         try {
             const { email, password } = req.body;

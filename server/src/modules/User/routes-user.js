@@ -16,7 +16,7 @@ class Routes {
     RoutePrivete() {
         // novo usuario
         this.App.post("/", Controller.Criar);
-
+        this.App.get('/authentication-token', Auth.ValidateUser);
         // GERAR NOVO TOKEN : 
         /* 
         Casos de usos: Essa rota pode ser usada em seu Context-Api com um useEffect. Todas as vezes que alguma 

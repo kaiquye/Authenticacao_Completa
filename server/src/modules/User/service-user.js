@@ -28,7 +28,7 @@ class Services {
             if (!match) return new Error('senha invalida');
             // crio o token e refrehstoken
             const idUser = userPassword.id;
-            const { Token, RefreshToken } = await Auth.CreateToken({ email, idUser });
+            const { Token, RefreshToken } = Auth.CreateToken({ email, idUser });
             console.log('token', Token, 'refrehs', RefreshToken)
             // salvo o refreshToken do usuario no DB junto com seu ID.
             await Repositories.createNewRefreshToken(RefreshToken, idUser);
