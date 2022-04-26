@@ -6,7 +6,7 @@ class Auth {
     CreateToken(data) {
         console.log('user', data);
         console.log()
-        const Token = jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '30s' });
+        const Token = jsonwebtoken.sign({ data }, process.env.SECRET, { expiresIn: '1800s' });
         console.log(Token)
         // boa pratica : Criar uma secret para valida somente o token do banco de dados.
         const RefreshToken = jsonwebtoken.sign({ data }, process.env.SECRET_REFRESH_TOKEN, { expiresIn: '900000s' });

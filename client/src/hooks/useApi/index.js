@@ -18,12 +18,14 @@ export const useApi = () => ({
         return { ok: response.data.ok, data: response.data }
     },
     RefreshToken: async (refreshToken, Token) => {
+        // pegando os milissegundos de inicio e termino do token
         const { iat, exp } = decode(Token);
-        // pegando os segundos
+        // subitraindo os milissegundos e dividindo por 60 para poder pegar a quantidade em  minutos.
         const segundos = Math.abs((iat - exp) / 60);
-        if (segundos > 1 && segundos < 10) {
+        // subitraindo a diferença entre os minutos do token com a data atual. Ex : 30min(Token) - 15min(Data atual) = 15 minutos antes de expirar o token
+        const exr = (segundos - new Date().getMinutes())
+        if (exr > 1 && segundos < 10) {
             const response = await Api.put('/refresh-token', { RefreshTokenID: refreshToken }, { headers: { 'x-custom-header': Token } });
-            console.log('refresh token ',response)
             if (response.data.ok) {
                 localStorage.setItem('RefreshToken', response.data.token);
             }
