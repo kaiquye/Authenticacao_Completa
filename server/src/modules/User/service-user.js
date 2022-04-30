@@ -43,10 +43,10 @@ class Services {
     async RefreshToken(id) {
         try {
             // --> busca um token no banco de dados;
-            // esse token é criado quando o usuario faz login. Ele tem um tempo de expiração maior, exemplo : 2hr.
+            // esse token é criado quando o usuario faz login. Ele tem um tempo de validade maior
             const { accept_token } = await Repositories.findRefreshTokenByUserId(id);
             console.log('token', accept_token)
-            // verificar se esse token exite, caso o usuario seja bloqueado e tente nevegar na apliacação;
+            // verificar se esse token exite, evita usuarios bloqueados usar a apliacação;
             if (!accept_token) return new Error('Refresh token não informado.');
             // Valida o refreshToken que esta salvo no banco de dados. (time);
             const { Token, data } = await Auth.ValidateRefreshToken(accept_token);
